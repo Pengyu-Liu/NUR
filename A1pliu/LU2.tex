@@ -1,0 +1,47 @@
+\section{Redshift distribution of galaxies}
+
+The shared module is given by:
+
+\lstinputlisting[firstline=1,lastline=2]{solveLU2.py}
+
+\subsection{a}
+We need to write an LU decomposition code to solve the linear equations: wss*f=wgs.
+wss is the matrix needed to do LU decomposition and f is solved by the LU matrix.
+The size of wss is (16,16) and both sizes of f and wgs are 16.\\
+We used the improved Crout's algorithm on slide14 in lecture2 to calculate the LU matrix.
+We loop over from k to i to j. At first, we find the row($\geq $k) with the largest absolute value as the pivot condidate and swap the row k and imax.
+Record the index of imax because we need it when solve the equations. Then loop over i\textgreater k to calculate alpha(ik).
+In this loop, loop over j\textgreater k and calculate alpha(ij) and beta(ij). And we put L and U matrix in one matrix to save memory.
+Because alpha[ii]=1, we don't need to write them out.\\
+
+After computing the LU matrix, we can use forward substitution and back substitution to solve f. Because we swapped rows in LU decomposition,
+we also need to swap wgs in forward substitution.\\
+
+The code of this subquestion is given by:
+\lstinputlisting[firstline=3,lastline=77]{solveLU2.py}
+
+
+The LU matrix is given by:
+\lstinputlisting[basicstyle=\tiny]{2aLU.txt}
+
+The upper triangle represents the U matrix(beta) and the lower triangle represents the L matrix(alpha).
+
+The solution of f is given by:
+\lstinputlisting{2af.txt}
+
+We can see that the sum of f is very close to 1. The error is very close to the single precision.
+
+\subsection{b}
+We conducted a single iteration to improve f. Because we already solved the LU matrix,
+we can use the same LU matrix and pivot permutation from 2(a) to solve this question. The method is described on slide 17 in lecture2.
+We solve delta\_f by LU*delta\_f=LU*f-wgs and the improved f\_new=f-delta\_f.\\
+
+The code of this subquestion is given by:
+\lstinputlisting[firstline=79,lastline=91]{solveLU2.py}
+
+The solution of the improved f is given by:
+\lstinputlisting{2bf.txt}
+
+We can see that the error is very close to that in question a. It seems that f is only slighlty improved.
+I think is the reason is that the error almost reached the single precision after the first calculation.
+So after one iteration, f is improved little under the single precision data type. It shows that this LU decomposition works quite well.
