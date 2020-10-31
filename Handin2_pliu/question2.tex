@@ -1,0 +1,67 @@
+\section{question2 Satellite galaxies around a massive central Part2}
+
+The shared modules are given by:
+
+\lstinputlisting[firstline=1,lastline=30]{question2.py}
+
+\subsection{a}
+We wrote a 1D minimization algorithm using the bracket to find the bracket and using the golden search to tighten the bracket until we reached our target accuracy. Finding the maximum of N(x) equals to finding the minimum of -N(x).\\
+
+The code of this subquestion is given by:
+\lstinputlisting[firstline=31,lastline=126]{question2.py}
+
+The results are given by:
+\lstinputlisting[]{Q2a.txt}
+Given (0,5), the bracket algorithm returns (0,5,13.09). Though it exceeds xmax=5, we set N(x)=0 where x$\geq$5, because N(x)$\geq$0 changes smoothly to 0. It does not influence the maximization process.
+
+\subsection{b}
+Because this question only concerns the radial dimension, we can transfer it to 1d sampling, ignoring $\theta$ and $\phi$. We used the rejection sample to generate the 1000 points.\\
+The code of this subquestion is given by:
+\lstinputlisting[firstline=128,lastline=186]{question2.py}
+
+Figure 7 shows the histogram of our 10000 sampled points and the normalized N(x).\\
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/Q2b.png}
+  \caption{The histogram of our 1000 sampled point and N(x). Both of them are normalized so that the integral equals 1. The blue line is the probability distribution of N(x); the orange line shows the histogram divided by the bin width and the total number 10000. We can see that they agree with each other. Because the probability is very small when x$\leq$1e-3 and x$\geq$1, the rejection sample hardly generate points in these ranges when the number of points is small. That's why we only see points showed by the orange range.}
+  \label{fig7}
+\end{figure}
+
+\subsection{c}
+At first, we selected 100 unique random galaxies from the 10000 galaxies in (b) with equal probability and not rejecting any drawn. We assume that the 10000 galaxies are unique even for those whose radii are the same, because the $\theta$ and $\phi$ can be different. Then we can transfer this question to generate 100 unique uniformed integers from 0 and 9999. We draw 100 galaxies out using these 100 indexes. I referred to the Fisher Yates shuffle mentioned in T5.3. The algorithm is:\\
+1.generate a random integer(d1) from 0 and the number of undrawned indexes\\
+2.count from the low end and pick the d1th number out from undrawned indexes\\
+3.put it into the drawn list and inactive it in the original indexes list\\
+4.go back to 1 until we draw 100 indexes\\
+
+Then we used mergesort to sort the 100 drawn galaxies from smallest to largest and plot the number of galaxies within r.\\
+The code of this subquestion is given by:
+\lstinputlisting[firstline=187,lastline=272]{question2.py}
+
+ The plot is given by Figure 8.
+
+ \begin{figure}[h!]
+   \centering
+   \includegraphics[width=0.9\linewidth]{./plots/Q2c.png}
+   \caption{The number of galaxies within r for our 100 selected random samples. The number increases quickly from 0.1 to 1, because this range contains the largest number of galaxies in the original 10000 galaxies. This curve (is CDF in some way) shows that the distribution of the 100 galaxies is similar to the distribution of the original 10000 galaxies. Because we select them randomly following the 3 conditions, it agrees with our expectation. }
+   \label{fig8}
+ \end{figure}
+
+
+\subsection{d}
+We used the mergesort to calculate the median, 16th and 84th percentile for this radial bin(containing the largest number of galaxies). And we divided the 10000 points into 100 haloes and made a histogram of the number of galaxies in this radial bin in each halo, where the width of each bin is 1. Then we plot poisson distribution using the poisson function we wrote in Handin1 with the mean value equals to the mean number of galaxies in this radial bin.\\
+The code of this subquestion is given by:
+\lstinputlisting[firstline=274,lastline=338]{question2.py}
+
+The median, 16th and 84th percentile for this bin are given by:
+\lstinputlisting[]{Q2d.txt}
+
+The histogram and poisson distribution are given by Figure 9.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/Q2d.png}
+  \caption{The histogram of the 100 values. The mean number of galaxies in this radial bin in 38.08 in our sample, which is taken as the $\lambda$ for the poisson function. The orange line Poisson distribution is multiplied by 100 so that we can compare it with the histogram. Our data agree with the Poisson distribution within some uncertainty. }
+  \label{fig9}
+\end{figure}

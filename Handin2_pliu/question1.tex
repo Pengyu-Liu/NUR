@@ -1,0 +1,105 @@
+\section{Question1 Dark Matter Halo}
+
+The shared modules for the this question are given by:
+\lstinputlisting[firstline=2, lastline=4]{question1.py}
+
+\subsection{a}
+We wrote a random number generator that returns random floating numbers between the lower limit and the upper limit(here[0,1]). We combined 64\_bit XOR-shift and MLCG. The higher 32 bits of the output of 64\_bit XOR shift is used as the input for MLCG.
+And we generated 1000 and 1000000 random numbers to test its quality.
+The code specific to this question is given by:
+\lstinputlisting[firstline=6, lastline=73]{question1.py}
+
+The seed of this entire program is 31. Firstly, we generated 1000 randoms numbers between 0 and 1 and plot them in a scatter plot, see Figure 1.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/Q1ascatter.png}
+  \caption{Sequential random numbers against each other($x_{i+1}$ vs $x_{i}$). We can see that these points scattered irregularly, which shows our random numbers have little influence on each other.}
+  \label{fig1}
+\end{figure}
+
+Then we generate 1e6 random numbers between 0 and 1. And bin them in 20 bins 0.05 wide. For each bin, the theoretical value is 50000, so the poisson uncertainty is $\sqrt{50000}$. The result is shown in Figure 2.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/Q1ahistogram.png}
+  \caption{Histogram of 1e6 random numbers. The blue line shows the histogram of the 1e6 numbers and the red error bar shows the poisson uncertainty. We can see that the value of each bin agrees with the mean value within the poisson uncertainty. }
+  \label{fig2}
+\end{figure}
+
+In addittion, we calculate the Pearson correlation coefficient $r_{x_i x_{i+1}}$ and $r_{x_i x_{i+2}}$ for 1e5 numbers. The result is given by:
+\lstinputlisting[]{Q1a.txt}
+The absolute values are much smaller than 1, which means that these random numbers have little correlations with each other. Our random number generator has a good quality and can be used for following steps.
+
+\subsection{b}
+We used the transformation method to generate radial distribution of particles. At first, we integrate Hernquist profile from 0 to r and that is $\frac{M*r^2}{(r+a)^2}$ . Then we need to normalize it by dividing Mdm(r=$\infty$) and get the CDF=$\frac{r^2}{(r+a)^2}$.
+The CDF is also the enclosed mass fraction. Then we invert the CDF so that we can sample points: $y=\frac{a*\sqrt{x}}{1-\sqrt{x}}$. x is random numbers between 0 and 1. We use our RNG(random number generators) to generate 1e6 points in [0,1] and use the invert CDF to transfer them to random numbers following the Hernquist distribution.
+
+The code specific to this question is give by:
+\lstinputlisting[firstline=75, lastline=111]{question1.py}
+
+We compare the enclosed fraction of particles at a certain radius with the expected amount of enclosed fraction of mass in Figure 3.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/Q1bfraction.png}
+  \caption{Enclosed fraction of particles and expected encloses mass fraction. The blue is our sampled results and the orange line is the expected value. The sampled results are slightly higher than the expected value at large radius. The reason is that the sampled value reaches 1 at the largest radius we generated but the expected value goes to 1 only when radius reaches infinity. The radius we generate always has a certain value not infinity. When the number of points increases, the error will become smaller and the sampled line will become very close to the expected one.}
+  \label{fig3}
+\end{figure}
+
+\subsection{c}
+We generated a 3D distribution of 1e3 particles in a Hernquist profile. We used 1000 random numbers for r, another 1000 random numbers for $\theta$ and another random numbers for $\phi$. Because we need $\theta$ and $\phi$ distribute uniformly on a sphere, we should use the inverse transform method to calculate p($\theta$) and p($\phi$). The probability of having a point in an element area dA should be constant over the sphere. So $\theta$=arccos(1-2*x1) and $\phi$=2*pi*x2, where x1 and x2 are uniformed random numbers in [0,1].
+The code specific to this question is give by:
+\lstinputlisting[firstline=113, lastline=142]{question1.py}
+
+The 3D scatter plot is given by Figure 4. And the distribution of $\theta$ and $\phi$ on a sphere is given by Figure 5.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/Q1c3d.png}
+  \caption{The 3D scatter plot of 1000 random points in a Hernquist profile.}
+  \label{fig4}
+\end{figure}
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/Q1csphere.png}
+  \caption{The distribution of $\theta$ and $\phi$ on a sphere. We can see that they are uniformed distributed on a sphere.}
+  \label{fig5}
+\end{figure}
+
+\subsection{d}
+We wrote a differentiation routine using ridder's method and calculated $\frac{d\rho(x)}{dr}$ at r=1.2a numerically and analytically.
+The code specific to this question is give by:
+\lstinputlisting[firstline=143, lastline=195]{question1.py}
+
+We chose the maximum order=10 and initial interval h=0.1 for ridder's method. The result is given by:
+\lstinputlisting[]{Q1d.txt}
+We can see that the numerical value agrees with the analytical value with a relative error close to 10$^{-12}$, which is very close to the limit of ridder's method(10$^{-14}$).
+
+\subsection{e}
+We used Newton\_Raphson method to find the root when delta=200 and 500.
+The code specific to this question is give by:
+\lstinputlisting[firstline=197, lastline=260]{question1.py}
+
+The results are given by:
+\lstinputlisting[]{Q1e.txt}
+We also show the function value at the root we found, and they are very close to 0. Our root algorithm finds good results. One thing needs to notice is that because we used ridder's method to calculate the differentiation, the initial interval needs to be adjusted for different functions so that it can give us the best results.
+
+\subsection{f}
+We used the downhill simplex method to find the minimum of this potential. Because downhill simplex method requires sort algorithm, we also wrote the mergesort to sort the array and returns its index after sorting.
+The code specific to this question is give by:
+\lstinputlisting[firstline=261, lastline=413]{question1.py}
+
+The final point and its potential is given by:
+\lstinputlisting[]{Q1f.txt}
+It matched with the analytical result (1.3,4.2) with an error about 1e-8.
+The distance from the final point at each iteration is given by Figure 6.
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/Q1f.png}
+  \caption{The number of iterations versus the distance from the final point. We can see that it almost successfully reached the final location after 30 iterations. But one thing needs to notice that we need to choose the initial points in a good way. We are already given one point and need to choose another 2 points. If we add the same value to each points in all dimensions, it might not go to the minimum. Instead, these points go close to each other and end at some wrong location. This phenomenon needs to be explored further.}
+  \label{fig6}
+\end{figure}
