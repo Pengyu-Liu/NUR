@@ -1,0 +1,51 @@
+\section{question2 Calculating forces with the FFT}
+
+The shared modules are given by:
+\lstinputlisting[firstline=1,lastline=7]{question2.py}
+
+\subsection{a}
+The code of this subquestion is given by:
+\lstinputlisting[firstline=9,lastline=71]{question2.py}
+
+I generate 1024 particles by using the provided code.(axis=0,1,2 correspond to y,x,z in plots) Then I found the 8 closest grids to each particle by implementing the bisection method to each dimension, also considering the periodic boundary conditions.
+After that, I added a weighted fraction of the particle's mass to its 8 closest grid points according to the distance to every grid point. For example, the closest two grid points to xp=0.1 is xg=15.5 and 0.5; distance=0.6 and 0.4. Finally, I converted the mass assigned to each grid point to a density contrast. Because the mass of a particle is 1 unit and the volume of a box is also 1 unit, the mass assigned to each grid point is also the density.
+The 2D $\delta$ slices for z=4.5, 9.5, 11.5 and 14.5 are shown in Figure 11.\\
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/delta.png}
+  \caption{2D slices for z=4.5, 9.5, 11.5 and 14.5, showing the $\delta$ assigned to each grid point. Colorbar is set for all subplots.}
+  \label{fig11}
+\end{figure}
+
+
+\subsection{b}
+The code of this subquestion is given by:
+\lstinputlisting[firstline=73,lastline=202]{question2.py}
+In this question, we need to implement 3D FFT and iFFT to a cube. At first, I wrote a 1D FFT and iFFT routine following the recursive Cooley\_Tukey algorithm: swap elements of the input array by bit\_reversing their indices; then call DFT routine recursively to divide input array into left and right parts until each part only contains one element; loop over k to update elements by the following equation and go upwards.
+\begin{equation}
+  \label{eq:t}
+  \begin{aligned}
+    t &= x[k] \\
+    x[k] &= t+\exp(i2\pi k/Nj)x[k+Nj/2] \\
+    x[k+Nj/2] &= t-\exp(i2\pi k/Nj)x[k+Nj/2]
+  \end{aligned}
+\end{equation}
+
+For 3D FFT or iFFT, I implement 1D FFT or iFFT to each rows(axis=0), then each columns(axis=1) and finally, each aisle (axis=3). \\
+According to the equation 2 in Handin Exercise3, I did FFT to the $\delta$ cube in (a) and divide each grid point by its corresponding mode $k^2={k_x}^2+{k_y}^2+{k_z}^2$. Because in Fourier space, we shifted negative part [-N/2, -1] to right part by adding N. When dividing $k^2$, we need to shift them back: for points=[0, N/2], kx=[0, N/2]; for points=[N/2, N-1], kx=[-N/2, -1]. For k=0, I kept the original value. Then I obtained the FFT of the potential: $\tilde{\Phi}=\frac{\tilde{\delta}}{k^2}$. Finally, I implemented 3D iFFT to it and got the potential $\Phi$. Potential should be real numbers. The output of iFFT are complex numbers because there are some round off error in the imaginary part( around the precision of float64). I plot the real part of iFFT result to show the potential for the same slices in Figure 12 and plot the log10(abs($\tilde{\Phi}$)) for the same slices in Figure 13.
+
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/potential.png}
+  \caption{2D images of potential $\Phi$ for the same slices(z=4.5, 9.5, 11.5, 14.5). I only plot the real part because the imaginary part only contain some round off errors. Compared with the $\delta$ slices, potential is larger where density is larger. }
+  \label{fig12}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/fftpotential.png}
+  \caption{2D images of iFFT $\tilde{\Phi}$ for the same slices(z=4.5, 9.5, 11.5 and 14.5) showing log10(abs($\tilde{\Phi}$)).}
+  \label{fig13}
+\end{figure}

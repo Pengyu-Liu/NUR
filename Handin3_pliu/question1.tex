@@ -1,0 +1,137 @@
+\section{Question1 Satellite galaxies around a massive central Part 3}
+Because there are five files, I wrapped all code for subquestion a, b and c. And looped over them for each file.
+The shared modules for this question are given by:
+\lstinputlisting[firstline=1, lastline=153]{question1.py}
+
+\subsection{a}
+
+The routine for calculating the incorrect $\chi ^{2}$ value is given by:
+\lstinputlisting[firstline=155, lastline=167]{question1.py}
+The code specific to this question is give by:
+\lstinputlisting[firstline=191, lastline=248]{question1.py}
+
+I chose 30 radial bins to bin satellites in log space in a range from 0 to 5, because the number density profile is more regular in log space as we have seen in previous exercises. 30 is a reasonable number that can capture the profile's features in [0,5].
+Then I binned the satellite galaxies and divided each bin value by $\langle Nsat \rangle$ to obtain a mean number of satellites per halo in each radial bin, Ni. And I calculated the expected $\tilde{Ni}$ by integrating n(x) in each bin interval (recalculated A for given a, b and c). I took these mean values as variances to calculate the incorrect $\chi ^{2}= \sum_{i=0}^{N-1}\frac{(Ni - \tilde{Ni})^2}{\tilde{Ni}}$ for given a, b and c. I used the downhill simplex routine to minimize $\chi^{2}$ value and obtain the best$\_$fit parameters.\\
+For each of the five data sets, the results are given by:
+\lstinputlisting[]{chisquare11.txt}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/m11chifit.png}
+  \caption{Loglog plot of Fitting results for satgals\_m11. Circles in blue represent the 'observed' results binned in 30 bins from 0 to 5(Bins with zeros value are not showed in the plot.). The orange solid line shows the best\_fit profile. We see that the easy $\chi ^{2}$ approach can give us a quite good fitting result.}
+  \label{fig1}
+\end{figure}
+
+\lstinputlisting[]{chisquare12.txt}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/m12chifit.png}
+  \caption{Loglog plot of Fitting results for satgals\_m12. Circles in blue represent the 'observed' results binned in 30 bins from 0 to 5(Bins with zeros value are not showed in the plot.). The orange solid line shows the best\_fit profile. We see that the easy $\chi ^{2}$ approach can give us a quite good fitting result.}
+  \label{fig2}
+\end{figure}
+
+\lstinputlisting[]{chisquare13.txt}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/m13chifit.png}
+  \caption{Loglog plot of Fitting results for satgals\_m13. Circles in blue represent the 'observed' results binned in 30 bins from 0 to 5(Bins with zeros value are not showed in the plot.). The orange solid line shows the best\_fit profile. We see that the easy $\chi ^{2}$ approach can give us a quite good fitting result.}
+  \label{fig3}
+\end{figure}
+
+\lstinputlisting[]{chisquare14.txt}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/m14chifit.png}
+  \caption{Loglog plot of Fitting results for satgals\_m14. Circles in blue represent the 'observed' results binned in 30 bins from 0 to 5(Bins with zeros value are not showed in the plot.). The orange solid line shows the best\_fit profile. We see that the easy $\chi ^{2}$ approach can give us a quite good fitting result.}
+  \label{fig4}
+\end{figure}
+
+\lstinputlisting[]{chisquare15.txt}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/m15chifit.png}
+  \caption{Loglog plot of Fitting results for satgals\_m15. Circles in blue represent the 'observed' results binned in 30 bins from 0 to 5(Bins with zeros value are not showed in the plot.). The orange solid line shows the best\_fit profile. We see that the easy $\chi ^{2}$ approach can give us a quite good fitting result.}
+  \label{fig5}
+\end{figure}
+
+We can see that $\chi ^{2}$ value is very small for all five data sets and Figure 1\_5 also show that the fitting results are very good by this easy and incorrect $\chi ^{2}$ approach. In addition, because $\chi ^{2}$ value is proportional to <Nsat>, it increases with <Nsat> from file 1 to file 5.
+\clearpage
+
+\subsection{b}
+The routine for calculating -lnL(a,b,c) is given by:
+\lstinputlisting[firstline=169, lastline=177]{question1.py}
+The code specific to this question is give by:
+\lstinputlisting[firstline=249, lastline=278]{question1.py}
+
+For this subquestion, I still used the same bins as in(a). The difference from (a) was that I changed the $\chi ^{2}$ approach to the correct Poisson log likelihood: $-lnL(a,b,c)=-\sum_{i=0}^{N-1} (Ni ln(\tilde{Ni})-\tilde{Ni})$. The negative sign is used to convert maximization problem(likelihood) to minimization problem. Then I used downhill simplex method to minimize -lnL and find the best\_fit parameters.\\
+For each of the five data sets, the results are given by:
+\lstinputlisting[]{poisson11.txt}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/m11poifit.png}
+  \caption{Loglog plot of Fitting results for satgals\_m11. Circles in blue represent the 'observed' results binned in 30 bins from 0 to 5(Bins with zeros value are not showed in the plot.). The orange solid line shows the best\_fit profile. We see that the easy Poisson approach also gives us a very good fitting result.}
+  \label{fig6}
+\end{figure}
+
+\lstinputlisting[]{poisson12.txt}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/m12poifit.png}
+  \caption{Loglog plot of Fitting results for satgals\_m12. Circles in blue represent the 'observed' results binned in 30 bins from 0 to 5(Bins with zeros value are not showed in the plot.). The orange solid line shows the best\_fit profile. We see that the easy Poisson approach also gives us a very good fitting result.}
+  \label{fig7}
+\end{figure}
+
+\lstinputlisting[]{poisson13.txt}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/m13poifit.png}
+  \caption{Loglog plot of Fitting results for satgals\_m13. Circles in blue represent the 'observed' results binned in 30 bins from 0 to 5(Bins with zeros value are not showed in the plot.). The orange solid line shows the best\_fit profile. We see that the easy Poisson approach also gives us a very good fitting result.}
+  \label{fig8}
+\end{figure}
+
+\lstinputlisting[]{poisson14.txt}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/m14poifit.png}
+  \caption{Loglog plot of Fitting results for satgals\_m14. Circles in blue represent the 'observed' results binned in 30 bins from 0 to 5(Bins with zeros value are not showed in the plot.). The orange solid line shows the best\_fit profile. We see that the easy Poisson approach also gives us a very good fitting result.}
+  \label{fig9}
+\end{figure}
+
+\lstinputlisting[]{poisson15.txt}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/m15poifit.png}
+  \caption{Loglog plot of Fitting results for satgals\_m15. Circles in blue represent the 'observed' results binned in 30 bins from 0 to 5(Bins with zeros value are not showed in the plot.). The orange solid line shows the best\_fit profile. We see that the easy Poisson approach also gives us a very good fitting result.}
+  \label{fig10}
+\end{figure}
+
+Figure 6-10 show that the best\_fit results of Poisson likelihood approach fit the data points quite well. The best\_fit parameters is close to the results in (a).\\
+
+\clearpage
+
+\subsection{c}
+The routine for G and Q value is given by:
+\lstinputlisting[firstline=179, lastline=189]{question1.py}
+
+The code specific to this question is give by:
+\lstinputlisting[firstline=280, lastline=292]{question1.py}
+
+Since both (a) and (b) used the same binned data, I chose to do G-test for both methods. $G=2\sum_{i=0}^{N-1}Niln(\frac{Ni}{\tilde{Ni}})$. Then I used the incomplete gamma function from scipy (special.gammainc) to calculate the CDF of $\chi^2$ distribution P(0.5x,0.5k). Q=1-P.
+The number of degrees of freedom k=N\_bin-4. The number of bins(data points) is the total freedom. There are three parameters and the sum of all bins' value equals to $\langle Nsat \rangle$, so I minus 4 from the total degrees of freedom. k=30-4=27.\\
+The results are given by:
+\lstinputlisting{Gtest11.txt}
+\lstinputlisting{Gtest12.txt}
+\lstinputlisting{Gtest13.txt}
+\lstinputlisting{Gtest14.txt}
+\lstinputlisting{Gtest15.txt}
+
+For the two methods, G and Q values are very close. G values are very small from file 1 to file 4, and therefore P values are also very small (locate at the left part of probability distribution profile not tail) and significance values Q are 1. In file 5, because $\langle Nsat \rangle$ is quite large, G for both files are relative large and Q are slightly smaller than 1. The results of five files agree with above figures: both methods fit the data very well.  No wonder Q are very large. It seems that the incorrect $\chi^2$ approach is correct just by the above results. But because the best\_fit parameters of the two methods are slightly different, the difference of the two methods can show up if we use MCMC.
