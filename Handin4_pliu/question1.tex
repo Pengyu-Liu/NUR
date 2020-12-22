@@ -1,0 +1,154 @@
+\section{Question1  Simulating the solar system}
+The shared modules for this question are given by:
+\lstinputlisting[firstline=1, lastline=11]{question1.py}
+
+
+\subsection{a}
+The code specific to this question is given by:
+\lstinputlisting[firstline=12, lastline=44]{question1.py}
+The 10 objects of the sun system are arranged in order: Sun, Mercury, Venus, Earth, Moon, Mars, Jupiter, Saturn, Uranus, Neptune. I used the mass of the Sun, Earth and Jupiter from astropy, and googled the mass of other objects. Figure 1 shows the initial positions (current time=2020-12-07 10:00) for all the objects.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/position_1a.png}
+  \caption{Initial positions for all the 10 objects at the given current time. The unit is in AU.}
+  \label{fig1}
+\end{figure}
+
+
+\subsection{b}
+The code specific to this question is given by:
+\lstinputlisting[firstline=46, lastline=151]{question1.py}
+
+For this subquestion, I only considered the forces between the sun and other planets, including the moon. The specific force is given by: $F=-\frac{G}{(r2-r1)^3}(r2-r1)$. r1 and r2 are vectors (x,y,z). I used the leapfrog algorithm on Slide31 in Lecture 11 to calculate the orbit:
+\begin{equation}
+  \label{eq:1}
+  \begin{aligned}
+    V_{i+1/2} = V_{i-1/2} + ha_i\\
+    X_{i+1} = X_{i} + hV_{i+1/2}\\
+  \end{aligned}
+\end{equation}
+
+The time step is 0.5 day (h) and the total time is 200 years. For each time step, we only need to calculate the 9 forces between the Sun and other objects. For the sun, we summed up the 9 forces and calculated its acceleration. I used the acceleration at the initial positions with a half of the regular time step to kick the initial conditions for the velocity:
+\begin{equation}
+  \label{eq:2}
+  \begin{aligned}
+    V_{1/2} = V_{0} + 0.5ha_0\\
+  \end{aligned}
+\end{equation}
+
+To show the positions of all objects clearly, I plot the positions of the sun, mercury and moon separately, plot the positions of the venus and earth together and plot the positions of the mars till neptune together. Figure 2,3,4,5 show the x,y and z positions for all the objects. We can see that the orbits of all objects are stable in 200 years. The orbit of mercury varies a little.\\
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/sun_mec_1b.png}
+  \caption{Positions of the sun and mercury in 200 years of 1b. The orbit of the sun varies a little. The orbit of the mercury also has a little fluctuations. }
+  \label{fig2}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/venus_earth_1b.png}
+  \caption{Positions of the venus and earth in 200 years of 1b. Both orbits are very stable.}
+  \label{fig3}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/moon_1b.png}
+  \caption{Positions of the moon in 200 years of 1b. The orbit is very stable.}
+  \label{fig4}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/mars_1b.png}
+  \caption{Positions of the mars, jupiter, saturn, uranus and neptune in 200 year of 1b. All the orbits are very stable.}
+  \label{fig5}
+\end{figure}
+
+\clearpage
+\subsection{c}
+The code specific to this question is given by:
+\lstinputlisting[firstline=153, lastline=204]{question1.py}
+
+Now, still using the leapfrog algorithm in 1b, but we need to take the forces between all particle pairs into account. I used the equation (1),(2),(3) in Hand-in exercise 4 to calculate the acceleration in a tensor. This tensor A has a size of (10,10,3) and each row contains all the accelerations on that particle. Because the effect of force is mutual, we only need to calculate N(N-1)/2 times for each time step. Here N is 10. I made the same plots as 1b to show the results of this method in Figure 6,7,8,9. The positions are very similar to the results of 1b, because the forces between the sun and planets are much larger than the forces between planets. The forces between planets can cause some small perturbation on planets' orbits. For example, there are some very small fluctuations on the mercury's orbit compared to 1b.\\
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/sun_mec_1c.png}
+  \caption{Positions of the sun and mercury in 200 years of 1c. The orbit of the sun varies a little. The orbit of the mercury has some small fluctuations at a smaller time scale than 1b. }
+  \label{fig6}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/venus_earth_1c.png}
+  \caption{Positions of the venus and earth in 200 years of 1c. Both orbits are very stable.}
+  \label{fig7}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/moon_1c.png}
+  \caption{Positions of the moon in 200 years of 1c. The orbit is very stable.}
+  \label{fig8}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/mars_1c.png}
+  \caption{Positions of the mars, jupiter, saturn, uranus and neptune in 200 years of 1c. All the orbits are very stable.}
+  \label{fig9}
+\end{figure}
+
+\clearpage
+\subsection{d}
+The code specific to this question is given by:
+\lstinputlisting[firstline=206, lastline=299]{question1.py}
+
+In this subquestion, I chose the Runge-Kutta 4th algorithm to repeat the calculations. Because position are calculated from the velocity and the velocity is calculated from the acceleration, while the acceleration is determined by the position, we need to calculate the acceleration and velocity alternatively for each order in every time step. The equations are given by:
+
+\begin{equation}
+  \label{eq:3}
+  \begin{aligned}
+    k1 = hV(t,Xn)\\
+    V(t+h/2,Xn+k1/2) = a(Xn+k1/2)*h/2 + V(t,Xn)\\
+    k2 = hV(t+h/2,Xn+k1/2)\\
+    V(t+h/2,Xn+k2/2) = a(Xn+k2/2)*h/2 + V(t,Xn)\\
+    k3 = hV(t+h/2,Xn+k2/2)\\
+    V(t+h,Xn+k3) = a(Xn+k3)*h + V(t,Xn)\\
+    k4 = hV(t+h,Xn+k3)\\
+    X_{n+1} = Xn + k1/6 + k2/3 + k3/3 + k4/6\\
+    V_{n+1} = Vn + h*(a(Xn)/6 + a(Xn+k1/2)/3 + a(Xn+k2/2)/3 + a(Xn+k3)/6)\\
+  \end{aligned}
+\end{equation}
+
+When I calculate the acceleration, I take into account all the particle-particle interactions. That means for each time step, I need to calculate the acceleration tensor four times. It makes the running speed much slower than the leapfrog algorithm (4 times slower). Since Runge-Kutta 4th algorithm calculates 4 orders in each step, the accuracy is high, I set the time step for this subquestion to be 1 day. (I ran this subquestion with a time step of 0.5 day before, and the results were very close to 1c, only the orbit of the moon evolved larger with time.) The results of this method are shown in Figure 10,11,12,13, including the leapfrog algorithm(1c). The orbits of all the objects except the mercury are very stable and similar to the leapfrog algorithm (1c). For the mercury orbit, we can see that it is unstable: it is ejected out of the solar system after 150 years.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/all_x_1d.png}
+  \caption{X positions of all the objects, except the mercury. "lp" represents the leapfrog algorithm and "rk" represents Runge-Kutta 4th algorithm. Solid lines are the results of Runge-Kutta and dashed lines are the results of leapfrog in 1c. They are very close.}
+  \label{fig10}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/all_y_1d.png}
+  \caption{Y positions of all the objects, except the mercury. Solid lines are the results of Runge-Kutta and dashed lines are the results of leapfrog in 1c. They are very close.}
+  \label{fig11}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/all_z_1d.png}
+  \caption{Z positions of all the objects, except the mercury. Solid lines are the results of Runge-Kutta and dashed lines are the results of the leapfrog in 1c. They are very close.}
+  \label{fig12}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/mercury_1d.png}
+  \caption{Positions of the mercury of both methods. Orange lines represent results of the RK algorithm and blue lines represent results of the leapfrog algorithm. The orbit of the mercury of the RK method are more chaotic in the first 150 years and deviates out of the solar system in the end. If we shrink the time step, it becomes stable.}
+\end{figure}
+
+We can conclude that leapfrog algorithm is more suitable for orbit calculation than Runge-Kutta 4th algorithm, in both running time and accuracy.

@@ -1,0 +1,51 @@
+\section{Spiral and elliptical galaxies}
+
+The shared modules are given by:
+\lstinputlisting[firstline=1,lastline=3]{question2.py}
+
+\subsection{a}
+The code of this subquestion is given by:
+\lstinputlisting[firstline=5,lastline=15]{question2.py}
+
+The first 4 columns of the galaxy data are the 4 features(n=4), and there are 1000 objects(m=1000). We need to scale each feature/column at first: subtract the mean value of each column and divide them by their standard deviation ($\frac{x_i-\mu}{\sigma}$). After the feature scaling, the mean value of each feature and standard deviation are approximately 0 and 1. All the 4 features for the first 5 objects are given by (rows are objects and columns are features):
+\lstinputlisting[]{features_first5.txt}
+
+
+\subsection{b}
+The code of this subquestion is given by:
+\lstinputlisting[firstline=17,lastline=178]{question2.py}
+
+I chose two sets of two columns to do the logistic regression: pair1(column 0 and 1) and pair2(column 1 and 3). For each pair, I implemented the logistic regression and used the downhill simplex routine to minimize the cost function. Because there are two features, the number of weights(parameters) are 3, including one bias. The hypothesis h = sigmoid(z) and z = w1*feature1+w2*feature2+w3, sigmoid=1/(1+$e^{-z}$). If h $\geq$ 0.5, then it's class 1; otherwise, it's class 0. Here, class 1 is spirals and 0 is ellipticals. I initialized weights to be 1 and used the downhill simplex to find the best weights of the minimization and recorded the cost function of each step. If the change of the cost function is smaller than 1e-10, then we say it reaches the convergence. The cost function is calculated by:
+\begin{equation}
+  \label{eq:4}
+  \begin{aligned}
+   J(w)=-\frac{1}{m}\sum_{i=0}^{m-1} {y^iln(h^i(w))+(1-y^iln(1-h^i(w)))}
+  \end{aligned}
+\end{equation}
+
+The weights and final values of cost function are given by:
+\lstinputlisting[]{weight_2b.txt}
+Each row represents the results of each pair. The first 3 columns are weights for the chosen feature1, feature2 and bias. The last column is the final value of the cost function. Figure 14 shows the convergence curves of both pairs for different iterations.\\
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/cost_2b.png}
+  \caption{The value of the cost function for the different iterations until converged. Left panel shows the curve for pair1(column(0,1)) and right panel shows the curve for pair2(column(1,3)). We can see that both the initial and final values of the cost function of pair1 are smaller than those of pair2, and pair1 also converges faster than pair2. We can guess that the features of pair1 are better for classifying the 2 types of galaxies than pair2.}
+  \label{fig14}
+\end{figure}
+
+\subsection{c}
+The code of this subquestion is given by:
+\lstinputlisting[firstline=180,lastline=222]{question2.py}
+I used the weights obtained from 2b to calculate the final hypothesis and compared them with 0.5 to classify the galaxy. I computed the number of the true/false positives/negatives and the F1 score for each pair. The results are given by:
+\lstinputlisting[]{results_2b.txt}
+Columns are: true positive, true negative, false positive, true negative and F1 score. Rows are pair1 and pair2. We can see that the number of true positive and negative, that's the right-classified number, is higher for pair1 than for pair2. And the F1 score of pair1 is 0.95, which is close to 1, while the F1 score of pair2 is 0.78. It shows again that the two features used in pair1 are better than those two features used in pair2 for classifying. Finally, for each pair, I made a plot of the two columns against each other also the decision boundary from my logistic regression (w1*x+w2*y+w3=0) in Figure 15.\\
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\linewidth]{./plots/plot_2c.png}
+  \caption{Classifying results. Left panel shows the result of pair1 and right panel shows the result of pair2. The orange dots represent ellipticals and blue triangles represent spirals. The green line shows the decision boundary. Our logistic regression algorithm can only form a linear decision boundary.  From the plot, we can see clearly that it's much easier to classifying spiral (1) and elliptical (0) galaxies by column 0 and 1. The two types of galaxies form two clusters and there is a very small overlapped region in the left panel, while the two types of galaxies have a large overlapped region in feature1,3 space. So the results of pair2 are worse.}
+  \label{fig15}
+\end{figure}
+
+From the values of the cost function, F1 score and the final plot, we can conclude that spiral and elliptical galaxies have clear differences in the first two columns: ordered rotation and color. They are can be used to classify these two types of galaxies. The spiral and elliptical galaxies have differences in colors and emission line, but they also share some similarities.
